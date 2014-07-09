@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "sql_parser/version"
 
 Gem::Specification.new do |s|
   s.name        = "sql_parser"
-  s.version     = SqlParser::VERSION
+  s.version     = "0.0.1"
   s.authors     = ["Jingwen Owen Ou"]
   s.email       = ["jingweno@gmail.com"]
   s.homepage    = "https://github.com/jingweno/sql_parser"
