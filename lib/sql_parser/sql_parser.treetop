@@ -34,7 +34,7 @@ grammar Sql
   end
 
   rule select
-    "select" quantifier:set_quantifier items {
+    select_keyword quantifier:set_quantifier items {
       def fields
         items.values
       end
@@ -47,9 +47,9 @@ grammar Sql
 
   rule set_quantifier
     (
-      required_space 'distinct' required_space
+      required_space distinct_keyword required_space
       /
-      required_space 'all' required_space
+      required_space all_keyword required_space
     ) {
       def value
         text_value.strip.downcase.to_sym
@@ -64,7 +64,7 @@ grammar Sql
   end
 
   rule from
-    required_space "from" required_space items {
+    required_space from_keyword required_space items {
       def tables
         items.values
       end
@@ -78,7 +78,7 @@ grammar Sql
   end
 
   rule where
-    required_space "where" required_space conditional_items {
+    required_space where_keyword required_space conditional_items {
       def conditions
         conditional_items.node
       end
@@ -106,9 +106,9 @@ grammar Sql
   end
 
   rule boolean_join
-    ('and' / 'or') {
+    ( and_keyword / or_keyword ) {
       def operator
-        text_value.to_sym
+        text_value.downcase.to_sym
       end
     }
   end
@@ -170,7 +170,35 @@ grammar Sql
   end
 
   rule keyword
-    'select' / 'from'
+    select_keyword / from_keyword
+  end
+
+  rule select_keyword
+    [sS] [eE] [lL] [eE] [cC] [tT]
+  end
+
+  rule from_keyword
+    [fF] [rR] [oO] [mM]
+  end
+
+  rule where_keyword
+    [wW] [hH] [eE] [rR] [eE]
+  end
+
+  rule and_keyword
+    [aA] [nN] [dD]
+  end
+
+  rule or_keyword
+    [oO] [rR]
+  end
+
+  rule distinct_keyword
+    [dD] [iI] [sS] [tT] [iI] [nN] [cC] [tT]
+  end
+
+  rule all_keyword
+    [aA] [lL] [lL]
   end
 
   rule required_space

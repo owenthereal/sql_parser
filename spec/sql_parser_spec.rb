@@ -24,20 +24,46 @@ end
 describe SqlParser, "#tree when parsing select statement" do
   include_context "SqlParser"
 
-  it "parses a multi field, table, and where clause statement" do
-    expect(parse("select distinct *, first_name, last_name, middle_name from users, accounts, logins where first_name='joe' and last_name='bob' or age > 25").tree).to eq({
-      :operator => :select,
-      :set_quantifier => :distinct,
-      :fields => [:'*', :first_name, :last_name, :middle_name],
-      :tables => [:users, :accounts, :logins],
-      :conditions => [
-        {:operator => :'=', :field => :first_name, :value => 'joe'},
-        {:operator => :and},
-        {:operator => :'=', :field => :last_name, :value => 'bob'},
-        {:operator => :or},
-        {:operator => :'>', :field => :age, :value => 25}
-      ]
-    })
+  context 'with lowercase keywords' do
+    it "parses a multi field, table, and where clause statement" do
+
+      query = "select distinct *, first_name, last_name, middle_name from users, accounts, logins where first_name='joe' and last_name='bob' or age > 25"
+
+      expect(parse(query).tree).to eq({
+          :operator => :select,
+          :set_quantifier => :distinct,
+          :fields => [:'*', :first_name, :last_name, :middle_name],
+          :tables => [:users, :accounts, :logins],
+          :conditions => [
+              {:operator => :'=', :field => :first_name, :value => 'joe'},
+              {:operator => :and},
+              {:operator => :'=', :field => :last_name, :value => 'bob'},
+              {:operator => :or},
+              {:operator => :'>', :field => :age, :value => 25}
+          ]
+      })
+    end
+  end
+
+  context 'with uppercase keywords' do
+    it "parses an multi field, table, and where clause statement" do
+
+      query = "SELECT DISTINCT *, first_name, last_name, middle_name FROM users, accounts, logins WHERE first_name='joe' AND last_name='bob' OR age > 25"
+
+      expect(parse(query).tree).to eq({
+          :operator => :select,
+          :set_quantifier => :distinct,
+          :fields => [:'*', :first_name, :last_name, :middle_name],
+          :tables => [:users, :accounts, :logins],
+          :conditions => [
+              {:operator => :'=', :field => :first_name, :value => 'joe'},
+              {:operator => :and},
+              {:operator => :'=', :field => :last_name, :value => 'bob'},
+              {:operator => :or},
+              {:operator => :'>', :field => :age, :value => 25}
+          ]
+      })
+    end
   end
 end
 
